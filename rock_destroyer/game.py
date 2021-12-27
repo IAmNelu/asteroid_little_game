@@ -1,5 +1,5 @@
 import pygame
-from utils import load_sprite, get_random_position
+from utils import load_sprite, get_random_position, print_text
 from models import Spaceship, Asteroid
 
 import os
@@ -14,6 +14,13 @@ class RockDestryer:
     self.screen = pygame.display.set_mode((800, 600))
     self.background = load_sprite("space", type="jpg", with_alpha=False)
     self.clock = pygame.time.Clock()
+    self.font = pygame.font.Font(None, 64)
+    self.message = ""
+    
+    self.reset()
+
+  def reset(self):
+    self.message = ""
     
     self.asteroids = []
     self.bullets = []
@@ -52,6 +59,9 @@ class RockDestryer:
       if is_key_pressed[pygame.K_UP]:
         self.spaceship.accelerate()
       
+      if self.message and is_key_pressed[pygame.K_UP]:
+        self.reset()
+      
 
   def _process_game_logic(self):
     for game_object in self._get_game_objects():
@@ -61,6 +71,7 @@ class RockDestryer:
       for asteroid in self.asteroids:
         if asteroid.collides_with(self.spaceship):
           self.spaceship = None
+          self.message = "You lost!"
           break
     
     for bullet in self.bullets[:]:
@@ -74,12 +85,20 @@ class RockDestryer:
     for bullet in self.bullets[:]:
       if not self.screen.get_rect().collidepoint(bullet.position):
         self.bullets.remove(bullet)
+        
+      if not self.asteroids and self.spaceship:
+        self.message = "You won!"
+    
+
 
   def _draw(self):
     # self.screen.fill((0, 0, 255))
     self.screen.blit(self.background, (0, 0))
     for game_object in self._get_game_objects():
       game_object.draw(self.screen)
+      
+    if self.message:
+      print_text(self.screen, self.message, self.font)
 
     pygame.display.flip()
     self.clock.tick(60)
