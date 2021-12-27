@@ -1,5 +1,6 @@
 from pygame.image import load
 from pygame.math import Vector2
+from pygame.mixer import Sound
 import random
 
 def load_sprite(name, with_alpha=True, type="png"):
@@ -25,3 +26,7 @@ def get_random_velocity(min_speed, max_speed):
   speed = random.randint(min_speed, max_speed)
   angle = random.randrange(0,360)
   return Vector2(speed, 0).rotate(angle)
+  
+def load_sound(name):
+  path=f"assets/sounds/{name}.wav"
+  return Sound(path)
