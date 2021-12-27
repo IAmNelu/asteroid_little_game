@@ -1,6 +1,6 @@
 import pygame
 from utils import load_sprite
-from models import Spaceship
+from models import Spaceship, Asteroid
 import os
 
 clear = lambda: os.system('cls')
@@ -12,8 +12,11 @@ class RockDestryer:
     self._init_pygame()
     self.screen = pygame.display.set_mode((800, 600))
     self.background = load_sprite("space", type="jpg", with_alpha=False)
-    self.spaceship = Spaceship((400, 300))
     self.clock = pygame.time.Clock()
+    
+    self.asteroids = [Asteroid((0,0)) for _ in range(6)]
+    self.spaceship = Spaceship((400, 300))  
+    
 
   def main_loop(self):
     while True:
@@ -42,11 +45,17 @@ class RockDestryer:
       
 
   def _process_game_logic(self):
-    self.spaceship.move(self.screen)
+    for game_object in self._get_game_objects():
+      game_object.move(self.screen)
 
   def _draw(self):
     # self.screen.fill((0, 0, 255))
     self.screen.blit(self.background, (0, 0))
-    self.spaceship.draw(self.screen)
+    for game_object in self._get_game_objects():
+      game_object.draw(self.screen)
+
     pygame.display.flip()
     self.clock.tick(60)
+
+  def _get_game_objects(self):
+    return [*self.asteroids, self.spaceship]
