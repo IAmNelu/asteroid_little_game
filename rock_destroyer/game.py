@@ -59,8 +59,9 @@ class RockDestryer:
       if is_key_pressed[pygame.K_UP]:
         self.spaceship.accelerate()
       
-      if self.message and is_key_pressed[pygame.K_UP]:
-        self.reset()
+    if self.message and is_key_pressed[pygame.K_r]:
+      self.reset()
+      
       
 
   def _process_game_logic(self):
